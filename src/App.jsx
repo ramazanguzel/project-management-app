@@ -24,7 +24,6 @@ function App() {
       tasks: [],
     };
     setProjects([...projects, newProject]);
-    console.log(projects);
   }
 
   function deleteProject(id) {
