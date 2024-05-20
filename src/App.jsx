@@ -21,6 +21,7 @@ function App() {
       title: title,
       description: description,
       date: date,
+      tasks: [],
     };
     setProjects([...projects, newProject]);
     console.log(projects);
@@ -34,6 +35,52 @@ function App() {
     setProjects(updatedProjects);
 
     setIsProjectDetails(false);
+  }
+
+  function addTask(projectId, task) {
+    const newTask = {
+      id: uuidv4(),
+      task: task,
+    };
+
+    const updatedProjects = projects.map((project) =>
+      project.id === projectId
+        ? {
+            ...project,
+            tasks: [...project.tasks, newTask], // Add task
+          }
+        : project
+    );
+    setProjects(updatedProjects);
+
+    // Update currentProject if it matches the projectId
+    if (currentProject.id === projectId) {
+      setCurrentProject({
+        ...currentProject,
+        tasks: [...currentProject.tasks, newTask],
+      });
+    }
+  }
+
+  function removeTask(projectId, taskId) {
+    const updatedProjects = projects.map((project) =>
+      project.id === projectId
+        ? {
+            ...project,
+            tasks: project.tasks.filter((task) => task.id !== taskId), // Remove task correctly
+          }
+        : project
+    );
+
+    setProjects(updatedProjects);
+
+    // Update currentProject if it matches the projectId
+    if (currentProject && currentProject.id === projectId) {
+      setCurrentProject({
+        ...currentProject,
+        tasks: currentProject.tasks.filter((task) => task.id !== taskId), // Remove task from currentProject
+      });
+    }
   }
 
   function onClickProjectTitle(project) {
@@ -81,6 +128,8 @@ function App() {
             <ProjectDetails
               project={currentProject}
               deleteProject={deleteProject}
+              addTask={addTask}
+              removeTask={removeTask}
             />
           </div>{" "}
         </div>

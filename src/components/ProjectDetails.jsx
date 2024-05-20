@@ -1,7 +1,12 @@
 import { useState } from "react";
 
-export default function ProjectDetails({ project, deleteProject }) {
-  const [task, setTask] = useState([]);
+export default function ProjectDetails({
+  project,
+  deleteProject,
+  addTask,
+  removeTask,
+}) {
+  const [task, setTask] = useState("");
 
   return (
     <section className="pl-8 pr-16 flex flex-col gap-6 ">
@@ -22,6 +27,8 @@ export default function ProjectDetails({ project, deleteProject }) {
         <form
           onSubmit={(e) => {
             e.preventDefault();
+            addTask(project.id, task);
+            setTask("");
           }}
         >
           <input
@@ -29,6 +36,10 @@ export default function ProjectDetails({ project, deleteProject }) {
             type="text"
             placeholder="Type here"
             className="input input-bordered w-full max-w-xs"
+            value={task}
+            onChange={(e) => {
+              setTask(e.target.value);
+            }}
           />
           <button
             type="submit"
@@ -38,9 +49,30 @@ export default function ProjectDetails({ project, deleteProject }) {
           </button>
         </form>
       </div>
-      <p className="text-lg font-medium text-neutral">
-        This project does not have any tasks yet.
-      </p>
+
+      <div className="bg-base-200 p-4 rounded-lg flex flex-col gap-6">
+        {project.tasks.length > 0 ? (
+          project.tasks.map((task, index) => {
+            return (
+              <div key={index} className="flex justify-between">
+                <p className="text-lg font-medium text-neutral ">
+                  {task.task}{" "}
+                </p>
+                <button
+                  onClick={() => removeTask(project.id, task.id)}
+                  className="font-medium text-md"
+                >
+                  Remove
+                </button>
+              </div>
+            );
+          })
+        ) : (
+          <p className="text-lg font-medium text-neutral ">
+            This project does not have any tasks yet.
+          </p>
+        )}
+      </div>
     </section>
   );
 }
